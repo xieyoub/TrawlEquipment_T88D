@@ -47,9 +47,8 @@ int main(void)
 	Encode_Init();      //编码器功能，定时器2，3
 	Led_Init();   
 	USART1_Config(); //与T81通信
-	//Time1_Config();  //串口等待超时处理
 	Key_Init();
-	netParamInit(); //读取flash中的参数
+	ReadFlash_param(); //读取flash中的参数
 	
  OSInit();
 	OSTaskCreate(start_task,(void *)0,(OS_STK *)&START_TASK_STK[START_TASK_SIZE-1],START_TASK_PRIO);//开始任务

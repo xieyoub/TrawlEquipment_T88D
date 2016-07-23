@@ -5,58 +5,13 @@ static INT8U err;
 static u8 Netbuf[3][18];
 NixieTub Nixie;
 
-//串口等待计时，超时5s
-void Time1_Config(void)
-{
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	NVIC_InitTypeDef NVIC_InitStructure;
-	
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1,ENABLE);
-	
-	TIM_TimeBaseStructure.TIM_Period = 24999;   //500ms
-	TIM_TimeBaseStructure.TIM_Prescaler = 1439;
-	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
-	TIM_TimeBaseStructure.TIM_RepetitionCounter = 0;
-	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_TimeBaseInit(TIM1,&TIM_TimeBaseStructure);
-	
-	TIM_ClearFlag(TIM1,TIM_FLAG_Update);
-	NVIC_InitStructure.NVIC_IRQChannel = TIM1_UP_IRQn;  //TIM3中断
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 2;  //先占优先级0级
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;  //从优先级3级
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE; //IRQ通道被使能
-	NVIC_Init(&NVIC_InitStructure);  //根据NVIC_InitStruct中指定的参数初始化外设NVIC寄存器
-	
-	TIM_ITConfig(TIM1,TIM_IT_Update,ENABLE);
-	TIM_Cmd(TIM1,ENABLE);
-}
-
-//串口等待超时处理
-void TIM1_UP_IRQHandler(void)
-{
-	if(TIM_GetITStatus(TIM1,TIM_IT_Update) != RESET)
-	{		
-		if(Usart_flag==0)
-		{
-			UsartUsingTime++;
-			if(UsartUsingTime>4)
-			{
-				UsartUsingTime = 0;
-				Usart_flag=1;
-				
-//				//超过三次串口都没回，判断对于的该网标为故障
-//				faultJudge();
-			}
-		}
-		else
-		{
-			UsartUsingTime=0;
-		}
-		TIM_ClearITPendingBit(TIM1,TIM_IT_Update);
-	}
-}
-
-//更新偏置距离设置值
+/************************************************************
+ * 函数名：updateOffset
+ * 描述  ：更新参数
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void updateOffset()
 {
 	switch (netState.Net_Connet)
@@ -80,11 +35,16 @@ void updateOffset()
 	}
 }
 
-//注入偏置距离
+/************************************************************
+ * 函数名：OffSetWrite
+ * 描述  ：注入参数
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void OffSetWrite()
 {
 	u8 i;
-	//UsartUsing = 0;  //串口正在等待
 	tx1buf[0] = 0x24;
 	tx1buf[1] = 0x31;
 	tx1buf[2] = BackOffsetValue>>8;
@@ -104,9 +64,15 @@ void OffSetWrite()
 		tx1buf[i] = 0;
 	
 	OSQPost(q_msg,(void*)tx1buf);
- //Com1SendData();
 }
 
+/************************************************************
+ * 函数名：OffSetInit
+ * 描述  ：参数初始化
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void OffSetInit()
 {
 	u8 i;
@@ -161,55 +127,75 @@ void OffSetInit()
 	}
 }
 
-//打开串口命令，进入写码状态
+/************************************************************
+ * 函数名：OpenSerial
+ * 描述  ：打开串口命令
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void OpenSerial()
 {
-	//UsartUsing = 0; //串口等待状态
 	tx1buf[0] = 0x24;
 	tx1buf[1] = 0x17;
 	tx1buf[7] = netState.Net_Sel;
 	OSQPost(q_msg,(void*)tx1buf);
-	//Com1SendData();
 }
 
-//读取
+/************************************************************
+ * 函数名：OffSetRead
+ * 描述  ：读取命令
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void OffSetRead()
 {
-	//UsartUsing = 0; //串口等待状态
 	tx1buf[0] = 0x24;
 	tx1buf[1] = 0x32;
 	tx1buf[7] = netState.Net_Sel;
 	OSQPost(q_msg,(void*)tx1buf);
-	//Com1SendData();
 }
 
-//关闭串口，退出写码状态
+/************************************************************
+ * 函数名：CloseSerial
+ * 描述  ：关闭串口命令
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void CloseSerial()
 {
-	//UsartUsing = 0; //串口等待状态
 	tx1buf[0] = 0x24;
 	tx1buf[1] = 0x18;
  tx1buf[7] = netState.Net_Connet;
 	OSQPost(q_msg,(void*)tx1buf);
-	//Com1SendData();
 }
 
-//定时发送串口给T81
-void AskConnect(void)
+/************************************************************
+ * 函数名：HandShake
+ * 描述  ：握手命令
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
+void HandShake(void)
 {
 	u8 i;
-	//UsartUsing = 0;
 	tx1buf[0] = 0x24;
 	tx1buf[1] = 0x58;
 	for(i=2;i<18;i++)
 		tx1buf[i] = 0;
-	
 	OSQPost(q_msg,(void*)tx1buf);
-//	Com1SendData();
-//	UsartUsing = 1;
 }
 
-//CRC 校验
+/************************************************************
+ * 函数名：msg_crc
+ * 描述  ：CRC校验
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 u16 msg_crc(u8 *ptr,u8 num)
 {
 	u16 crc=0xffff;
@@ -238,7 +224,14 @@ u16 msg_crc(u8 *ptr,u8 num)
 	return ~crc;
 }
 
-void exception(void)
+/************************************************************
+ * 函数名：Led_exception
+ * 描述  ：故障闪灯
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
+void Led_exception(void)
 {
 		tim2flag = !tim2flag;
 		
@@ -274,7 +267,13 @@ void exception(void)
 		}	
 }
 
-//静默时间计时
+/************************************************************
+ * 函数名：tmr1_callback
+ * 描述  ：定时器1回调
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void tmr1_callback(OS_TMR *ptmr,void *p_arg)
 {
 	SilentTime++;
@@ -284,13 +283,25 @@ void tmr1_callback(OS_TMR *ptmr,void *p_arg)
 	}
 }
 
-//故障闪灯
+/************************************************************
+ * 函数名：tmr2_callback
+ * 描述  ：定时器2回调
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void tmr2_callback(OS_TMR *ptmr,void *p_arg)
 {
-	exception();
+	Led_exception();
 }
 
-//握手任务
+/************************************************************
+ * 函数名：handshake_task
+ * 描述  ：握手任务
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void handshake_task(void *pdata)
 {
 	u8 *rxbuf;
@@ -300,7 +311,7 @@ void handshake_task(void *pdata)
 		OSTimeDlyHMSM(0, 0,1,0);
 		if(Usart_flag)
 		{
-			AskConnect();
+			HandShake();
 			rxbuf = (u8*)OSMboxPend(msg_hand,200,&err);
 			
 			if(0x51 == rxbuf[1])//收到回复
@@ -328,8 +339,12 @@ void handshake_task(void *pdata)
 	}
 }
 
-//插上第一次注入
-
+/***********************************************************
+ * 函数名: paramSet_task
+ * 描述  ：第一次插上时初始化参数任务
+ * 输入  : 无
+ * 输出  : 无
+ ***********************************************************/
 void paramSet_task(void *pdata)
 {
 	u8 *rxbuf;

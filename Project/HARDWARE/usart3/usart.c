@@ -1,9 +1,6 @@
 #include "sys.h"
 #include "usart.h"	  
 
-static u8 Uart1_Rx_Num = 0;
-static u8 ReceiveSta = 0;
-static u16 crcdata,scrData; //校验生成的数据, 源校验的数据
 static u8 NetSta[3];//t800插入的状态
 static u8 err;
 
@@ -153,7 +150,8 @@ void USART1_IRQHandler(void)
 		if(crcdata == scrData)
 		{
 			GetCom1Data();
-			Pendfault();
+			if(rx1buf[1]!=0x51)
+				Pendfault();
 			OSMboxPost(msg_uart,(void*)rx1buf);//发送消息
 		}
 		
@@ -360,7 +358,7 @@ void GetCom1Data(void)
 			    {
 								CloseSerial();
 								//保存参数
-								WriteFlash_Dis();
+								WriteFlash_param();
 			    }
 				   break;
 			
@@ -396,15 +394,19 @@ void Com1SendData()
 	Usart1_Receive;
 }
 
-//串口发送任务
+/************************************************************
+ * 函数名：usartsend_task
+ * 描述  ：串口发送任务
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void usartsend_task(void *pdata)
 {
-	u8 *s;
-	u8 *rxbuf;
 	INT8U err;
 	while(1)
 	{
-		s = OSQPend(q_msg,0,&err);
+		OSQPend(q_msg,0,&err);
 		if(err==OS_ERR_NONE)
 		{
 			Usart_flag = 0;
@@ -426,8 +428,13 @@ void usartsend_task(void *pdata)
 	}
 }
 
-
-//故障网标判断
+/************************************************************
+ * 函数名：Postfault
+ * 描述  ：故障网位仪发送
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void Postfault()
 {
 	switch (tx1buf[7])
@@ -464,6 +471,13 @@ void Postfault()
 	}
 }
 
+/************************************************************
+ * 函数名：Pendfault
+ * 描述  ：故障网位移请求
+ * 输入  ：无
+ * 输出  ：无
+ * 调用  ：无
+ ************************************************************/
 void Pendfault()
 {
 	switch (tx1buf[7])
