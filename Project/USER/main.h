@@ -25,6 +25,7 @@ extern u8 nettemp;
 extern u32 MMSI[3];
 extern u8 SendCnt;
 
+extern OS_Q_DATA q_data;
 /////////////////////////UCOSII任务设置///////////////////////////////////
 //START 任务
 //任务优先级

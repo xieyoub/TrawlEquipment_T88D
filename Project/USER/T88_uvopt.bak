@@ -262,7 +262,7 @@
 
   <Group>
     <GroupName>USER</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -272,10 +272,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>36</ColumnNumber>
+      <ColumnNumber>16</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>28</TopLine>
-      <CurrentLine>52</CurrentLine>
+      <TopLine>30</TopLine>
+      <CurrentLine>51</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
@@ -318,7 +318,7 @@
 
   <Group>
     <GroupName>HARDWARE</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -328,10 +328,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>33</ColumnNumber>
+      <ColumnNumber>13</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>1</TopLine>
-      <CurrentLine>19</CurrentLine>
+      <TopLine>373</TopLine>
+      <CurrentLine>394</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\HARDWARE\LED\Led.c</PathWithFileName>
       <FilenameWithoutPath>Led.c</FilenameWithoutPath>
@@ -344,10 +344,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>25</ColumnNumber>
+      <ColumnNumber>24</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>162</TopLine>
-      <CurrentLine>193</CurrentLine>
+      <TopLine>188</TopLine>
+      <CurrentLine>220</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\HARDWARE\ENCODE\encode.c</PathWithFileName>
       <FilenameWithoutPath>encode.c</FilenameWithoutPath>
@@ -360,10 +360,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>4</ColumnNumber>
+      <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>170</TopLine>
-      <CurrentLine>204</CurrentLine>
+      <TopLine>192</TopLine>
+      <CurrentLine>214</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\HARDWARE\KEY\key.c</PathWithFileName>
       <FilenameWithoutPath>key.c</FilenameWithoutPath>
@@ -376,10 +376,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>18</ColumnNumber>
+      <ColumnNumber>30</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>378</TopLine>
-      <CurrentLine>407</CurrentLine>
+      <TopLine>139</TopLine>
+      <CurrentLine>145</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\HARDWARE\usart3\usart.c</PathWithFileName>
       <FilenameWithoutPath>usart.c</FilenameWithoutPath>
@@ -392,10 +392,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>25</ColumnNumber>
+      <ColumnNumber>7</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>341</TopLine>
-      <CurrentLine>355</CurrentLine>
+      <TopLine>361</TopLine>
+      <CurrentLine>410</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\HARDWARE\CONFIG\config.c</PathWithFileName>
       <FilenameWithoutPath>config.c</FilenameWithoutPath>
@@ -408,10 +408,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>39</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>17</TopLine>
-      <CurrentLine>29</CurrentLine>
+      <TopLine>55</TopLine>
+      <CurrentLine>71</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>..\HARDWARE\CONFIG\flashwr.c</PathWithFileName>
       <FilenameWithoutPath>flashwr.c</FilenameWithoutPath>

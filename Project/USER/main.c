@@ -16,6 +16,7 @@ u8 SendCnt=0;  //发送注入命令的次数
 
 NetState netState;
 NetParam netparam;
+OS_Q_DATA q_data; 
 
 //任务堆栈
 OS_STK START_TASK_STK[START_TASK_SIZE];

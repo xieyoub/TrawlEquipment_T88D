@@ -285,80 +285,20 @@ void GetCom1Data(void)
 								}
 								break;
 			
-			case 0x17: //打开串口
-								{
-									if(netState.fault)//选择的为故障网位仪
-									{
-											CloseSerial();
-											netState.fault = 0;
-									}
-									else
-									{
-										State = 1; //进入写码状态
-										SilentTime = 0;
-										netState.Net_Connet = netState.Net_Sel;
-										netState.Net_Sel = 0;
-										Usart_flag = 1; //串口空闲状态
-										//数码管赋值
-										switch (netState.Net_Connet)
-										{
-											case 1://左舷网位仪
-																{
-																	LeftRightOffsetValue = netparam.left_x;
-																	BackOffsetValue = netparam.left_y;
-																}
-																break;
-																
-											case 2:
-																{
-																	BackOffsetValue = netparam.tail_y;
-																}
-																break;
-																
-											case 3:
-																{
-																	LeftRightOffsetValue = netparam.right_x;
-																	BackOffsetValue = netparam.right_y;
-																}
-																break;
-										}
-										Nixie.Display = 1;										
-									}
-								}
-				    break;
-			
-			case 0x18: //关闭串口
-								{
-									//插上时注入成功
-									if(SendCnt!=0)
-									{
-										OSMboxPost(msg_receive,(void*)rx1buf);
-										OSMboxPend(msg_uart,1,&err);
-									}
-									else
-									{
-										State = 0; //退出写码状态
-										DisableEncode();
-										Nixie.Display = 1;
-										netState.Net_Connet = 0;
-									}
-									
-									if(netState.Net_Sel) //从一个网位仪的写码状态跳到另外一个
-									{
-										OpenSerial();
-									}
-									else
-									{
-										Usart_flag = 1; //串口空闲状态
-									}
-								}
-								break;
-			
 			case 0x31: //注入成功
 			    {
-								CloseSerial();
-								//保存参数
-								WriteFlash_param();
+								if(SendCnt==0)
+								{
+									State = 0; //退出写码状态
+									DisableEncode();
+									Nixie.Display = 1;
+									netState.Net_Connet = 0;
+								}
+								else //插上时注入参数应答
+								{
+									OSMboxPost(msg_receive,(void*)rx1buf);
+									OSMboxPend(msg_uart,1,&err);
+								}
 			    }
 				   break;
 			

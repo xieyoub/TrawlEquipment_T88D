@@ -88,7 +88,6 @@ void OffSetInit()
 			tx1buf[5] = netparam.left_x>>8;
 			tx1buf[6] = netparam.left_x;
 			tx1buf[7] = 1;
-			tx1buf[8] = 1; //第一次注入
 			for(i=0;i<18;i++)
 			 Netbuf[0][i] = tx1buf[i];
 			OSQPost(msg_write,(void*)Netbuf[0]);
@@ -103,7 +102,6 @@ void OffSetInit()
 			tx1buf[5] = netparam.tail_x>>8;
 			tx1buf[6] = netparam.tail_x;
 			tx1buf[7] = 2;
-			tx1buf[8] = 1; //第一次注入
 			for(i=0;i<18;i++)
 			 Netbuf[1][i] = tx1buf[i];
 			OSQPost(msg_write,(void*)Netbuf[1]);
@@ -118,7 +116,6 @@ void OffSetInit()
 			tx1buf[5] = netparam.right_x>>8;
 			tx1buf[6] = netparam.right_x;
 			tx1buf[7] = 3;
-			tx1buf[8] = 1; //第一次注入
 			for(i=0;i<18;i++)
 			 Netbuf[2][i] = tx1buf[i];
 			OSQPost(msg_write,(void*)Netbuf[2]);
@@ -375,10 +372,24 @@ void paramSet_task(void *pdata)
 				rxbuf = OSMboxPend(msg_receive,200,&err);
 				if(err==OS_ERR_NONE)
 				{
-					if(rxbuf[1]==0x18)//收到关闭串口命令说明注入成功
+					if(rxbuf[1]==0x31)//注入成功
 					{
 						SendCnt = 0;
-						switch(rxbuf[7])
+						err=OSQQuery(msg_write,&q_data);//查询队列中是否有消息
+						if(err==OS_ERR_NONE)
+						{
+							if(q_data.OSNMsgs==0)
+							{
+								if(State==1)
+								{
+									State = 0; //退出写码状态
+									DisableEncode();
+									netState.Net_Connet = 0;
+								}
+								Nixie.Display = 1;
+							}
+						}
+						switch(numbering)
 						{
 							case 1:
 												netState.Net_Insert[0] = 1;
@@ -426,8 +437,6 @@ void paramSet_task(void *pdata)
 			OSTaskResume(KEY_TASK_PRIO);
 			OSTaskResume(USARTSEND_TASK_PRIO);
 			OSTaskResume(HANDSHAKE_TASK_PRIO);
-			
-			Nixie.Display = 1;
 		}
 	}
 }

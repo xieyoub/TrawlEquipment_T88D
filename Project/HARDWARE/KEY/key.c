@@ -64,119 +64,64 @@ void key_task(void *pdata)
 					case 1: //网尾
 										if(Usart_flag==1)
 										{
-												if(netState.Net_Insert[1]!=0)//示位标已插入,包括故障的
+											if(netState.Net_Insert[1]==1)//插入
+											{
+												if(netState.Net_Connet!=2)//屏蔽再次按此按键
 												{
-													if(State) //正处于写码状态
-													{
-														if(netState.Net_Connet != 2)//屏蔽再次按此按键
-														{
-															if(netState.Net_Insert[1]==1) //选择的该网位仪状态为正常
-															{
-																netState.Net_Sel = 2;
-																CloseSerial();
-															}
-															else //选择的该网位仪为故障的网位仪
-															{
-																netState.Net_Sel = 2;
-																OpenSerial();
-																netState.fault = 1;	
-															}
-														}
-													}
-													else//非写码状态
-													{
-														if(netState.Net_Insert[1]==1)//该网位仪正常
-														{
-															netState.Net_Sel = 2;
-															OpenSerial();
-														}
-														else//该网位仪故障
-														{
-															netState.Net_Sel = 2;
-															OpenSerial();
-															netState.fault = 1;					
-														}
-													}
-												}					
+													SilentTime=0;
+													netState.Net_Connet = 2;
+													State = 1;
+													BackOffsetValue = netparam.tail_y;
+													Nixie.Display = 1;
+												}
+											}
+											else if(netState.Net_Insert[1]==2)//故障
+											{
+												
+											}
 										}
 										break;
 					
 					case 2://左舷
 										if(Usart_flag==1)
 										{
-											if(netState.Net_Insert[0]!=0)//示位标已插入,包括故障的
-											{
-												if(State) //正处于写码状态
+											if(netState.Net_Insert[0]==1)//插入
 												{
-													if(netState.Net_Connet != 1)//屏蔽再次选中此按键
+													if(netState.Net_Connet!=1)//屏蔽再次按此按键
 													{
-														if(netState.Net_Insert[0]==1) //选择的该网位仪状态为正常
-														{
-															netState.Net_Sel = 1;
-															CloseSerial();
-														}
-														else //选择的该网位仪为故障的网位仪
-														{
-														netState.Net_Sel = 1;
-														OpenSerial();
-														netState.fault = 1;	
-														}
+														SilentTime=0;
+														netState.Net_Connet = 1;
+														State = 1;
+														LeftRightOffsetValue = netparam.left_x;
+														BackOffsetValue = netparam.left_y;
+														Nixie.Display = 1;
 													}
 												}
-												else//非写码状态
+												else if(netState.Net_Insert[0]==2)//故障
 												{
-													if(netState.Net_Insert[0]==1)//该网位仪正常
-													{
-														netState.Net_Sel = 1;
-														OpenSerial();
-													}
-													else//该网位仪故障
-													{
-														netState.Net_Sel = 1;
-														OpenSerial();
-														netState.fault = 1;					
-													}
+													
 												}
-											}
 										}
 										break;
 						
 					case 3://右舷
 										if(Usart_flag==1)
 										{
-											if(netState.Net_Insert[2]!=0)//示位标已插入,包括故障的
+											if(netState.Net_Insert[2]==1)//插入
 											{
-												if(State)//正处于写码状态
+												if(netState.Net_Connet!=3)//屏蔽再次按此按键
 												{
-													if(	netState.Net_Connet != 3)//屏蔽再次选中此按键
-													{
-														if(netState.Net_Insert[2]==1) //选择的该网位仪状态为正常
-														{
-															netState.Net_Sel = 3;
-															CloseSerial();
-														}
-														else //选择的该网位仪为故障的网位仪
-														{
-														netState.Net_Sel = 3;
-														OpenSerial();
-														netState.fault = 1;	
-														}
-													}
+													SilentTime=0;
+													netState.Net_Connet = 3;
+													State = 1;
+													LeftRightOffsetValue = netparam.right_x;
+													BackOffsetValue = netparam.right_y;
+													Nixie.Display = 1;
 												}
-												else //非写码状态
-												{
-													if(netState.Net_Insert[2]==1)//该网位仪正常
-													{
-														netState.Net_Sel = 3;
-														OpenSerial();
-													}
-													else//该网位仪故障
-													{
-														netState.Net_Sel = 3;
-														OpenSerial();
-														netState.fault = 1;				
-													}
-												}
+											}
+											else if(netState.Net_Insert[2]==2)//故障
+											{
+												
 											}
 										}
 										break;
@@ -189,14 +134,27 @@ void key_task(void *pdata)
 											{
 												case 2: //网尾
 																	{
-																		LeftRightOffsetValue = 0;
+																		netparam.tail_x = 0;
+																		netparam.tail_y = BackOffsetValue;
+																		WriteFlash_param();
 																		OffSetWrite();
 																	}
 																	break;
 																	
 												case 1:
+																	{
+																		netparam.left_x = LeftRightOffsetValue;
+																		netparam.left_y = BackOffsetValue;
+																		WriteFlash_param();
+																		OffSetWrite();
+																	}
 												case 3:
-																	OffSetWrite();
+																	{
+																		netparam.right_x = LeftRightOffsetValue;
+																		netparam.right_y = BackOffsetValue;
+																		WriteFlash_param();
+																		OffSetWrite();
+																	}
 																	break;
 												default:
 																	break;					
